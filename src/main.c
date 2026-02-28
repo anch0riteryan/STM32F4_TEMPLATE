@@ -20,7 +20,7 @@
 
 int main (void ) {
 
-	//vTaskStartScheduler ();
+	vTaskStartScheduler ();
 
 	while (1) {
 		//
