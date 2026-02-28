@@ -8,14 +8,13 @@
 
 #define vPortSVCHandler        SVC_Handler
 #define xPortPendSVHandler     PendSV_Handler
-#define xPortSysTickHandler    SysTick_Handler
 
 #define configUSE_PREEMPTION                                        1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION                     0
 #define configUSE_TICKLESS_IDLE                                     0
-#define configCPU_CLOCK_HZ                                          72000000
-#define configSYSTICK_CLOCK_HZ                                      1000
-#define configTICK_RATE_HZ                                          250
+#define configCPU_CLOCK_HZ                                          180000000
+//#define configSYSTICK_CLOCK_HZ                                      1000
+#define configTICK_RATE_HZ                                          1000
 #define configMAX_PRIORITIES                                        5
 #define configMINIMAL_STACK_SIZE                                    128
 #define configMAX_TASK_NAME_LEN                                     32
@@ -32,6 +31,7 @@
 #define configUSE_TIME_SLICING                                      1
 #define configUSE_NEWLIB_REENTRANT                                  0
 #define configENABLE_BACKWARD_COMPATIBILITY                         0
+#define configCOMMAND_INT_MAX_OUTPUT_SIZE                           256
 #define configNUM_THREAD_LOCAL_STORAGE_POINTERS                     5
 #define configUSE_MINI_LIST_ITEM                                    1
 #define configSTACK_DEPTH_TYPE                                      uint32_t
@@ -92,8 +92,8 @@
 #define configENABLE_ERRATA_837070_WORKAROUND                  1
 
 /* ARMv8-M port specific configuration definitions. */
-#define configENABLE_TRUSTZONE                            0
-#define configRUN_FREERTOS_SECURE_ONLY            0
+#define configENABLE_TRUSTZONE                                  0
+#define configRUN_FREERTOS_SECURE_ONLY                          0
 #define configENABLE_MPU                                        0
 #define configENABLE_FPU                                        0
 #define configENABLE_MVE                                        0

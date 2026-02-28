@@ -86,7 +86,8 @@ APP_INC := $(foreach \
 	-I$(inc)\
 )
 
-linker_script := $(LD_PATH)/STM32F429ZITX_FLASH.ld
+#linker_script := $(LD_PATH)/STM32F429ZITX_FLASH.ld
+linker_script := $(LD_PATH)/STM32F429ZITX_FLASH_SDRAM.ld
 specs := --specs=nosys.specs
 mcu := -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -std=gnu2x
 debug := -g -gdwarf-4 -O0
@@ -106,7 +107,7 @@ CFLAGS += \
 	-I$(INC_PATH)
 
 ifeq ($(USE_FREERTOS),true)
-CFLAGS += -D_USE_FREERTOS
+CFLAGS += -DUSE_FREERTOS
 endif
 
 # LIBS include
@@ -128,7 +129,7 @@ LDFLAGS += $(debug)
 # LINKER DESCIPRTOR
 LDFLAGS += -T$(linker_script)
 
-.PHONY : all size clean
+.PHONY : all size clean distclean
 
 objs += $(startup_obj)
 objs += $(system_obj)
@@ -136,6 +137,7 @@ objs += $(hal_obj)
 
 ifeq ($(USE_FREERTOS),true)
 objs += $(freertos_obj)
+objs += $(freertos_cli_obj)
 endif
 
 objs += $(drivers_obj)
@@ -149,6 +151,7 @@ cmsis_dsp_lib := $(ARCHIVE_PATH)/libcmsis-dsp.a
 core_objs := $(startup_obj) $(system_obj) $(drivers_obj) $(obj) $(libs_obj)
 ifeq ($(USE_FREERTOS),true)
 core_objs += $(freertos_obj)
+core_objs += $(freertos_cli_obj)
 endif
 
 link_inputs := $(core_objs) $(hal_lib) $(cmsis_dsp_lib)
@@ -157,11 +160,13 @@ all: dump_info check_obj_path $(APP_NAME).elf $(APP_NAME).hex
 	@echo done!
 
 clean:
-	rm ./obj/* -rf
-	rm ./$(APP_NAME).elf
-	rm ./$(APP_NAME).hex
-	rm ./$(APP_NAME).map
-	rm -f $(hal_lib) $(cmsis_dsp_lib) $(ARCHIVE_PATH)/*.rsp $(OBJ_PATH)/link.rsp
+	rm -f $(obj) $(libs_obj) $(drivers_obj) $(freertos_obj) $(freertos_cli_obj)
+	rm -f ./$(APP_NAME).elf ./$(APP_NAME).hex ./$(APP_NAME).map
+	rm -f $(OBJ_PATH)/link.rsp
+
+distclean: clean
+	rm -rf ./obj
+	rm -f $(hal_lib) $(cmsis_dsp_lib) $(ARCHIVE_PATH)/*.rsp
 
 dump_info:
 	@echo "----------------------------------------"
@@ -241,4 +246,3 @@ $(OBJ_PATH)/drivers/%.o : $(DRIVER_PATH)/%.c
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.c
 	@echo $(CC) $<
 	@$(CC) $< $(CFLAGS) $@
-
